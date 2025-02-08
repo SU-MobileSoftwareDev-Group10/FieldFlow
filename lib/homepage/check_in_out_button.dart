@@ -1,12 +1,31 @@
-import 'package:field_flow/homepage/check_in_out_button_state.dart';
+import 'package:field_flow/providers/time_tracker.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-class CheckInOutButton extends StatefulWidget {
-  const CheckInOutButton({
+class CheckInOutButton extends StatelessWidget {
+  final VoidCallback checkIn;
+  final VoidCallback checkOut;
+
+  const CheckInOutButton(this.checkIn, this.checkOut, {
     super.key,
-    rawPositions = const []
   });
 
   @override
-  State<CheckInOutButton> createState() => CheckInOutButtonState();
+  Widget build(BuildContext context) {
+    final timeTracker = context.watch<TimeTracker>();
+
+    return ElevatedButton(
+      onPressed: switch (timeTracker.checkedIn) {
+        true => checkOut,
+        false => checkIn,
+      },
+      style: ElevatedButton.styleFrom(
+          shape: CircleBorder(),
+          padding: EdgeInsets.all(50),
+          backgroundColor: Colors.lightBlueAccent),
+      child: Text(
+        timeTracker.checkedIn ? 'Check Out' : 'Check In',
+      ),
+    );
+  }
 }

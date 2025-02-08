@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:provider/provider.dart';
 
-import 'homepage/check_in_out_button.dart';
+import 'homepage/check_in_out_button_state.dart';
 import 'homepage/checked_in_out_text.dart';
 
 class Homepage extends StatefulWidget {
@@ -50,7 +50,7 @@ class _HomepageState extends State<Homepage>
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (!timeTracker.checkedOut)
-              CheckInOutButton(),
+              CheckInOut(),
             SizedBox(height: 10),
             CheckedInOutText(),
           ],
