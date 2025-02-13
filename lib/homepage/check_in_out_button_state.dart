@@ -14,30 +14,27 @@ class CheckInOut extends StatefulWidget {
   State<CheckInOut> createState() => _CheckInOutState();
 }
 
-class _CheckInOutState extends State<CheckInOut>
-    with DialogConfirmMixin {
+class _CheckInOutState extends State<CheckInOut> with DialogConfirmMixin {
   List<(Position, DateTime)> rawPositions = [];
-
-  void _positionListener() async {
-    final currentPosition = context.read<PositionProvider>().currentPosition;
-    final currentTime = DateTime.now();
-    rawPositions.add((currentPosition!, currentTime));
-    debugPrint('position: ${currentPosition.toString()} at $currentTime');
-  }
-
-  void _resetCheckOut(BuildContext context) {
-    
-  }
 
   @override
   Widget build(BuildContext context) {
     final timeTracker = context.watch<TimeTracker>();
     final positionProvider = context.watch<PositionProvider>();
 
+    void positionListener() async {
+      final currentPosition = positionProvider.currentPosition;
+      final currentTime = DateTime.now();
+      rawPositions.add((currentPosition!, currentTime));
+      debugPrint('position: ${currentPosition.toString()} at $currentTime');
+    }
+
+    void resetCheckOut() {}
+
     checkIn() async {
       final (canTrackPosition, error) = await positionProvider.canTrackPosition;
       if (canTrackPosition) {
-        positionProvider.startTracking(_positionListener);
+        positionProvider.startTracking(positionListener);
         timeTracker.checkIn();
         FieldFlowBanner.show(context, 'Tracking Location');
       } else {
@@ -54,7 +51,7 @@ class _CheckInOutState extends State<CheckInOut>
         timeTracker.checkOut(rawPositions);
         setState(() {
           FieldFlowBanner.hide(context);
-          _resetCheckOut(context);
+          resetCheckOut();
         });
       }
     }
